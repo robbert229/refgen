@@ -1,0 +1,28 @@
+package main
+
+import (
+    "{{.Package}}"
+    "encoding/json"
+    "github.com/fatih/structs"
+    "os"
+)
+
+type Parameter struct {
+    Name string `json:"name"`
+    Type string `json:"type"`
+}
+
+func main() {
+    i := &{{.ShortPackage}}.{{.Model}}{}
+
+    fields := structs.Fields(i)
+    params := make([]Parameter, len(fields))
+    for i := 0; i < len(fields); i++ {
+        params[i] = Parameter{
+            Name: fields[i].Name(),
+            Type: fields[i].Kind().String(),
+        }
+    }
+    enc := json.NewEncoder(os.Stdout)
+    enc.Encode(params)
+}
